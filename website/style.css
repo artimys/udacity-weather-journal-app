@@ -88,12 +88,6 @@ section h2 {
     border-bottom: 1px solid pink;
 }
 
-.entry:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: 0;
-}
-
 footer {
     font-style: italic;
     color: #fff;

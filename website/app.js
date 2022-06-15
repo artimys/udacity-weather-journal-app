@@ -1,60 +1,56 @@
-// Personal API Key for OpenWeatherMap API
+/* Personal API Key for OpenWeatherMap API
+ * Resource: https://openweathermap.org/current#zip
+ * Working API example: https://api.openweathermap.org/data/2.5/weather?zip=10801,us&appid=e6e6da6d5cf0d93be8c55ae967a6e11d&units=imperial
+ */
 const apiKey = 'e6e6da6d5cf0d93be8c55ae967a6e11d&units=imperial';
-const apiBaseUri = "https://api.openweathermap.org/data/2.5/weather?";
-// api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=e6e6da6d5cf0d93be8c55ae967a6e11d
-// https://openweathermap.org/current#zip
-
+const apiBaseUri = "https://api.openweathermap.org/data/2.5/weather?zip=";
 const newEntryButton = document.querySelector("button#generate");
-const entryList = document.querySelector("#entries");
-
 let d = new Date();
 let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
 
 
 /* Function called by event listener */
-const addEntry = (event) => {
-    event.preventDefault();
+const addEntry = event => {
+    // Get user zip code
+    const userZip = document.querySelector("#zip").value;
+
+    // Build OpenWeatherMap API URL
+    const openWeatherEndpoint = `${apiBaseUri}${userZip},us&appid=${apiKey}`;
 
     // Call OpenWeatherMap API
-    //
+    getWeatherTemp(openWeatherEndpoint)
+    .then(weatherData => {
+        // Return temp from JSON
+        return weatherData.main.temp;
+    })
+    .then(temp => {
+        // Build new entry object
+        const entryData = {
+            temp: temp,
+            content: document.querySelector("#feelings").value,
+            date: newDate
+        }
 
-    // Build object
-    const entryData = {
-        temp: "api",
-        content: document.querySelector("#feelings").value
-    }
-
-    // Submit object to server side API
-    postData("http://localhost:8000/addEntry", entryData)
+        // Submit object to server side API
+        postData("http://localhost:8000/addEntry", entryData)
         .then(newRecord => {
-            insertEntry(newRecord);
+            updateEntry(newRecord);
         });
+    })
 };
 
 // Event listener to add function to existing HTML DOM element
 newEntryButton.addEventListener("click", addEntry);
 
-
-/* Function to GET Web API Data*/
-const getTemp = async (url = '', data = {})=> {
-    console.log(data);
-
-    const response = await fetch(url, {
-        method: "GET",
-        credentials: "same-origin",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    });
+/* Function to GET Web API Data */
+const getWeatherTemp = async (url)=> {
+    const response = await fetch(url);
 
     try {
-        const newData = await response.json();
-        // console.log(newData);
-        return newData;
+        const weatherData = await response.json();
+        return weatherData;
     } catch (error) {
-        console.log("error", error);
-        // appropriately handle the error
+        console.log("openweather error", error);
     }
 }
 
@@ -65,7 +61,6 @@ const postData = async (url = '', data = {})=> {
     const response = await fetch(url, {
         method: "POST",
         credentials: "same-origin",
-        // mode: "no-cors",
         headers: {
             "Content-Type": "application/json"
         },
@@ -84,7 +79,6 @@ const postData = async (url = '', data = {})=> {
 const getData = async (url = '')=> {
     const response = await fetch(url, {
         method: "GET",
-        // mode: "no-cors",
         credentials: "same-origin",
         headers: {
             "Content-Type": "application/json"
@@ -93,7 +87,6 @@ const getData = async (url = '')=> {
 
     try {
         const allData = await response.json();
-        // console.log(allData);
         return allData;
     } catch (error) {
         console.log("get error: ", error);
@@ -102,15 +95,10 @@ const getData = async (url = '')=> {
 
 
 
-const insertEntry = (obj) => {
-    const newEntryHTML = `
-        <div id="entry-id" class="entry">
-            <div id="date">date: ?</div>
-            <div id="temp">temp: ${obj.temp}</div>
-            <div id="content">content: ${obj.content}</div>
-        </div>`;
-
-    entryList.innerHTML += newEntryHTML;
+const updateEntry = (obj) => {
+    document.querySelector("#temp").textContent = `${Math.round(obj.temp)} degrees`;
+    document.querySelector("#content").textContent = obj.content;
+    document.querySelector("#date").textContent = obj.date;
 };
 
 const init = () => {
@@ -119,14 +107,8 @@ const init = () => {
             if (Object.keys(data).length === 0) {
                 return;
             }
-
-            for (const key in data) {
-                insertEntry(data[key]);
-            }
+            updateEntry(data);
         });
 };
 
 init();
-
-
-// https://api.openweathermap.org/data/2.5/weather?zip=10801,us&appid=e6e6da6d5cf0d93be8c55ae967a6e11d&units=imperial

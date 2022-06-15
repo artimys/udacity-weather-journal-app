@@ -21,34 +21,35 @@ app.use(cors());
 // Initialize the main project folder
 app.use(express.static("website"));
 
+// Callback to debug
+const listening = () => {
+     console.log("server running, Yay!!");
+     console.log("running on localhost:", port);
+};
+
+// Initialize all route with a callback function
+const getEntry = (request, response) => {
+     console.log("'/all'", projectData);
+     response.send(projectData);
+};
+
+const addEntry = (request, response) => {
+     const entry = request.body;
+
+     projectData["temp"] = entry.temp;
+     projectData["content"] = entry.content;
+     projectData["date"] = entry.date;
+
+     console.log("'/addEntry'", projectData);
+     response.send(projectData);
+};
+
+// Callback function to complete GET '/all'
+app.get('/all', getEntry);
+
+// Post Route
+app.post('/addEntry', addEntry);
+
 // Spin up the server
 const port = 8000;
 const server = app.listen(port, listening);
-
-// Callback to debug
-function listening(){
-     console.log("server running, Yay!!");
-     console.log("running on localhost:", port);
-}
-
-// Initialize all route with a callback function
-
-// Callback function to complete GET '/all'
-app.get('/all', function (req, res) {
-     console.log("'/all'", projectData);
-     res.send(projectData);
-})
-
-// Post Route
-app.post('/addEntry', function (req, res) {
-     const entry = req.body;
-     const newId = (Object.keys(projectData).length + 1).toString();
-
-     projectData[newId] = {
-          temp: entry.temp,
-          content: entry.content
-     }
-
-     console.log("'/addEntry'", newId, "=>", projectData[newId]);
-     res.send(projectData[newId]);
-})
