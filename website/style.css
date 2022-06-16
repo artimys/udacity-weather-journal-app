@@ -1,9 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;600;700&display=swap');
 
+:root {
+    --background: #845ec2;
+    --section-background: #fbeaff;
+    --button-background: #ff6f96;
+    --button-background-hover: #fd5683;
+    --error-color: red;
+}
+
 body {
     font-family: 'Raleway', sans-serif;
     font-size: 16px;
-    background-color: #845ec2;
+    background-color: var(--background);
     padding: 1em;
 
     display: flex;
@@ -27,7 +35,7 @@ section {
     min-height: 100px;
     padding: 2.1em 2.5em;
     margin-bottom: 2em;
-    background-color: #fbeaff;
+    background-color: var(--section-background);
     border-radius: 10px;
 }
 
@@ -35,57 +43,71 @@ section h2 {
     margin: 0 0 1em;
 }
 
-.form-group {
-    margin-bottom: 2em;
+.required {
+    font-weight: 700;
+    font-style: italic;
+    color: #ff6f96;
 }
 
-.form-group:last-child {
-    margin-bottom: 0;
+.field-invalid {
+    border: 1px solid var(--error-color) !important;
+}
+
+.field-error {
+    margin-top: 0.5em;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--error-color);
+}
+
+.form-group {
+    margin-top: 1.5em;
 }
 
 .form-group label {
-    display: block;
+    display: inline-block;
     margin: 0.7em 0;
     font-weight: 700;
 }
 
 .form-group input[type=number],
 .form-group textarea {
+    display: block;
     width: 75%;
-    padding: 0.7em;
+    padding: 1em;
     border: 1px solid pink;
     border-radius: 5px;
 }
 
-/* Firefox */
+/* Firefox - remove controls from number input field */
 .form-group input[type=number] {
     -moz-appearance: textfield;
 }
 
-/* Chrome, Safari, Edge, Opera */
+/* Chrome, Safari, Edge, Opera remove controls from number input field */
 .form-group input[type=number]::-webkit-outer-spin-button,
 .form-group input[type=number]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .form-group button {
-    margin: 0;
+    margin: 1em 0 0;
     padding: 1em;
     border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: #ff6f96;
-    color: #fff;
+    background-color: var(--button-background);
     font-size: 0.9rem;
     font-weight: 700;
+    color: #fff;
     cursor: pointer;
-    text-transform: uppercase;
 }
 
-.entry {
-    margin-bottom: 1em;
-    padding-bottom: 1em;
-    border-bottom: 1px solid pink;
+.form-group button:hover,
+.form-group button:focus {
+    background-color: var(--button-background-hover);
 }
 
 footer {

@@ -17,17 +17,20 @@
             <h2>New Entry</h2>
 
             <div class="form-group">
-                <label for="zip">Enter Zipcode</label>
+                <label for="zip">Enter zip code:</label> <span class="required">*</span>
                 <input type="number" id="zip" placeholder="enter zip code here" minlength="5" maxlength="5" pattern="^[0-9]{5}$" required>
+                <p class="field-error"></p>
             </div>
 
             <div class="form-group">
-                <label for="feelings">How are you feeling today?</label>
+                <label for="feelings">How are you feeling today?</label> <span class="required">*</span>
                 <textarea id="feelings" rows="9" required></textarea>
+                <p class="field-error"></p>
             </div>
 
             <div class="form-group">
-                <button id="generate" type="submit">Add Entry</button>
+                <button id="generate" type="submit">ADD ENTRY</button>
+                <small class="required">* Required</small>
             </div>
         </section>
 

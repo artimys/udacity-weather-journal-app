@@ -9,40 +9,95 @@ let d = new Date();
 let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
 
 
-/* Function called by event listener */
+//---------------------------------------------------------------------------------------------------
+
+/**
+ * @description Calls OpenWeatherMap API and custom API to add entry from form fields
+ * @param {event} event - click event from button
+ */
 const addEntry = event => {
-    // Get user zip code
-    const userZip = document.querySelector("#zip").value;
+    if (isEntryFormValid()) {
+        // Get user zip code
+        const userZip = document.querySelector("#zip").value;
 
-    // Build OpenWeatherMap API URL
-    const openWeatherEndpoint = `${apiBaseUri}${userZip},us&appid=${apiKey}`;
+        // Build OpenWeatherMap API URL
+        const openWeatherEndpoint = `${apiBaseUri}${userZip},us&appid=${apiKey}`;
 
-    // Call OpenWeatherMap API
-    getWeatherTemp(openWeatherEndpoint)
-    .then(weatherData => {
-        // Return temp from JSON
-        return weatherData.main.temp;
-    })
-    .then(temp => {
-        // Build new entry object
-        const entryData = {
-            temp: temp,
-            content: document.querySelector("#feelings").value,
-            date: newDate
-        }
+        // Call OpenWeatherMap API
+        getWeatherTemp(openWeatherEndpoint)
+        .then(weatherData => {
+            // Return temp from JSON
+            return weatherData.main.temp;
+        })
+        .then(temp => {
+            // Build new entry object
+            const entryData = {
+                temp: temp,
+                content: document.querySelector("#feelings").value,
+                date: newDate
+            }
 
-        // Submit object to server side API
-        postData("http://localhost:8000/addEntry", entryData)
-        .then(newRecord => {
-            updateEntry(newRecord);
+            // Submit object to server side API
+            postData("http://localhost:8000/addEntry", entryData)
+            .then(newRecord => {
+                updateEntry(newRecord);
+            });
         });
-    })
+    }
 };
 
-// Event listener to add function to existing HTML DOM element
+/**
+ * @description Validate form fields; zip code must be 5-digit number and feelings cannot be blank
+ * @param {event} event - click event from button
+ * @return {boolean} true => field(s) are valid; false => field(s) are invalid
+ */
+const isEntryFormValid = () => {
+    const inputZip = document.querySelector("#zip");
+    const inputFeelings= document.querySelector("#feelings");
+    let isValid = true;
+
+    if ( /^[0-9]{5}$/.test(inputZip.value) ) {
+        inputZip.classList.remove("field-invalid");
+        inputZip.nextElementSibling.textContent = "";
+    } else {
+        inputZip.classList.add("field-invalid");
+        inputZip.nextElementSibling.textContent = "please enter a 5-digit zip code (US)";
+        isValid = false;
+    }
+
+    if ( inputFeelings.value !== "" ) {
+        inputFeelings.classList.remove("field-invalid");
+        inputFeelings.nextElementSibling.textContent = "";
+    } else {
+        inputFeelings.classList.add("field-invalid");
+        inputFeelings.nextElementSibling.textContent = "please enter your feelings";
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+/**
+ * @description Update DOM with entry object values
+ * @param {object} obj - entry object from Project Data { temp: ..., content: ..., date: ...}
+ */
+const updateEntry = (obj) => {
+    document.querySelector("#temp").textContent = `${Math.round(obj.temp)} degrees`;
+    document.querySelector("#content").textContent = obj.content;
+    document.querySelector("#date").textContent = obj.date;
+};
+
+// Add Event listener to form button
 newEntryButton.addEventListener("click", addEntry);
 
-/* Function to GET Web API Data */
+
+// FETCH CALLS
+//---------------------------------------------------------------------------------------------------
+
+/**
+ * @description GET Web API Data
+ * @param {string} url - API URL
+ */
 const getWeatherTemp = async (url)=> {
     const response = await fetch(url);
 
@@ -54,10 +109,13 @@ const getWeatherTemp = async (url)=> {
     }
 }
 
-/* Function to POST data */
+/**
+ * @description POST API Data
+ * @param {string} url - API URL
+ * @param {object} data - entry object
+ */
 const postData = async (url = '', data = {})=> {
-    console.log("new entry:", data);
-
+    // console.log("new entry:", data);
     const response = await fetch(url, {
         method: "POST",
         credentials: "same-origin",
@@ -75,7 +133,10 @@ const postData = async (url = '', data = {})=> {
     }
 }
 
-/* Function to GET Project Data */
+/**
+ * @description GET Project Data
+ * @param {string} url - API URL
+ */
 const getData = async (url = '')=> {
     const response = await fetch(url, {
         method: "GET",
@@ -94,13 +155,12 @@ const getData = async (url = '')=> {
 }
 
 
+// INITIAL PAGE LOAD
+//---------------------------------------------------------------------------------------------------
 
-const updateEntry = (obj) => {
-    document.querySelector("#temp").textContent = `${Math.round(obj.temp)} degrees`;
-    document.querySelector("#content").textContent = obj.content;
-    document.querySelector("#date").textContent = obj.date;
-};
-
+/**
+ * @description Function to run on initial page load
+ */
 const init = () => {
     getData("http://localhost:8000/all")
         .then(data => {
