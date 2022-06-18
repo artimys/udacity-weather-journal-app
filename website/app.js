@@ -1,8 +1,7 @@
 /* Personal API Key for OpenWeatherMap API
  * Resource: https://openweathermap.org/current#zip
- * Working API example: https://api.openweathermap.org/data/2.5/weather?zip=10801,us&appid=e6e6da6d5cf0d93be8c55ae967a6e11d&units=imperial
  */
-const apiKey = 'e6e6da6d5cf0d93be8c55ae967a6e11d&units=imperial';
+const apiKey = 'KEY_HERE&units=imperial';
 const apiBaseUri = "https://api.openweathermap.org/data/2.5/weather?zip=";
 const newEntryButton = document.querySelector("button#generate");
 let d = new Date();
