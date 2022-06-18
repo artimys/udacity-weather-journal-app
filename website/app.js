@@ -16,6 +16,7 @@ let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
  * @param {event} event - click event from button
  */
 const addEntry = event => {
+
     if (isEntryFormValid()) {
         // Get user zip code
         const userZip = document.querySelector("#zip").value;

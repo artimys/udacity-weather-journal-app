@@ -28,7 +28,6 @@ header h1 {
 
 main {
     width: 100%;
-    max-width: 600px;
 }
 
 section {
@@ -72,7 +71,7 @@ section h2 {
     font-weight: 700;
 }
 
-.form-group input[type=number],
+.form-group input[type=text],
 .form-group textarea {
     display: block;
     width: 75%;
@@ -81,21 +80,9 @@ section h2 {
     border-radius: 5px;
 }
 
-/* Firefox - remove controls from number input field */
-.form-group input[type=number] {
-    -moz-appearance: textfield;
-}
-
-/* Chrome, Safari, Edge, Opera remove controls from number input field */
-.form-group input[type=number]::-webkit-outer-spin-button,
-.form-group input[type=number]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
 .form-group button {
     margin: 1em 0 0;
-    padding: 1em;
+    padding: 0.7em 1em;
     border: 1px solid #ddd;
     border-radius: 5px;
     background-color: var(--button-background);
@@ -110,7 +97,24 @@ section h2 {
     background-color: var(--button-background-hover);
 }
 
+#entryHolder > div {
+    margin-bottom: 1em;
+}
+
 footer {
     font-style: italic;
     color: #fff;
+}
+
+@media screen and (min-width: 700px) {
+    main {
+        display: flex;
+        gap: 3em;
+        justify-content: center;
+    }
+
+    main > section {
+        width: 100%;
+        max-width: 400px;
+    }
 }
