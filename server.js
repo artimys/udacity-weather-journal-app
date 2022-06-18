@@ -29,7 +29,8 @@ const listening = () => {
 
 // Initialize all route with a callback function
 const getEntry = (request, response) => {
-     console.log("'/all'", projectData);
+     console.log("GET '/all'");
+     console.log(" -> response:", projectData);
      response.send(projectData);
 };
 
@@ -40,7 +41,9 @@ const addEntry = (request, response) => {
      projectData["content"] = entry.content;
      projectData["date"] = entry.date;
 
-     console.log("'/addEntry'", projectData);
+     console.log("POST'/addEntry'");
+     console.log(" -> response:", projectData);
+     // response.send('Post received');
      response.send(projectData);
 };
 

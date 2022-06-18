@@ -6,7 +6,7 @@ const apiKey = 'e6e6da6d5cf0d93be8c55ae967a6e11d&units=imperial';
 const apiBaseUri = "https://api.openweathermap.org/data/2.5/weather?zip=";
 const newEntryButton = document.querySelector("button#generate");
 let d = new Date();
-let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
+let newDate = (d.getMonth()+1)+'.'+ d.getDate()+'.'+ d.getFullYear();
 
 
 //---------------------------------------------------------------------------------------------------
@@ -40,8 +40,9 @@ const addEntry = event => {
 
             // Submit object to server side API
             postData("http://localhost:8000/addEntry", entryData)
-            .then(newRecord => {
-                updateEntry(newRecord);
+            .then((response) => {
+                // Call API to get fetch ProjectData and update UI
+                loadData();
             });
         });
     }
@@ -77,6 +78,19 @@ const isEntryFormValid = () => {
 
     return isValid;
 }
+
+/**
+ * @description Call API to fetch ProjectData and update UI
+ */
+const loadData = () => {
+    getData("http://localhost:8000/all")
+    .then(data => {
+        if (Object.keys(data).length === 0) {
+            return;
+        }
+        updateEntry(data);
+    });
+};
 
 /**
  * @description Update DOM with entry object values
@@ -163,13 +177,7 @@ const getData = async (url = '')=> {
  * @description Function to run on initial page load
  */
 const init = () => {
-    getData("http://localhost:8000/all")
-        .then(data => {
-            if (Object.keys(data).length === 0) {
-                return;
-            }
-            updateEntry(data);
-        });
+    loadData();
 };
 
 init();
