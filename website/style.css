@@ -8,6 +8,12 @@
     --error-color: red;
 }
 
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Raleway', sans-serif;
     font-size: 16px;
@@ -74,7 +80,7 @@ section h2 {
 .form-group input[type=text],
 .form-group textarea {
     display: block;
-    width: 75%;
+    width: 100%;
     padding: 1em;
     border: 1px solid pink;
     border-radius: 5px;
